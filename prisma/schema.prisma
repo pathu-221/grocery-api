@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id         String @id @default(uuid())
+    email      String @unique
+    first_name String
+    last_name  String
+    password   String
+    user_name  String @unique
+
+    cart_items Cart[]
+    orders     Order[]
+    addresses  UserAddress[]
+
+    created_at   DateTime       @default(now())
+    updated_at   DateTime       @updatedAt
+    deleted_at   DateTime?
+
+    @@map("users")
+}
+
+model Product {
+    id          String      @id @default(uuid())
+    name        String
+    description String
+    base_price  Float
+    quantity    Int
+    cart        Cart[]
+    order_items OrderItem[]
+    images      String?
+    status      Int         @default(1)
+
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
+
+    @@map("products")
+}
+
+model Cart {
+    id         String  @id @default(uuid())
+    user       User    @relation(fields: [user_id], references: [id])
+    user_id    String
+    product    Product @relation(fields: [product_id], references: [id])
+    product_id String
+    quantity   Int
+
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
+
+    @@map("carts")
+}
+
+model Order {
+    id             String      @id @default(uuid())
+    grand_total    Float
+    total_items    Int
+    buyer          User        @relation(fields: [buyer_id], references: [id])
+    buyer_id       String
+    order_items    OrderItem[]
+    payment_type   String
+    payment_id     String?
+    payment_status Int         @default(1)
+    payment_url    String?
+
+    shipping_address_1    String
+    shipping_address_2    String?
+    shipping_city         String
+    shipping_state        String
+    shipping_zip          Int
+    shipping_address_name String
+
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
+
+    @@map("orders")
+}
+
+model OrderItem {
+    id               String  @id @default(uuid())
+    orders           Order   @relation(fields: [order_id], references: [id])
+    order_id         String
+    product          Product @relation(fields: [product_id], references: [id])
+    product_id       String
+    product_quantity Int
+    product_price    Float
+
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
+
+    @@map("order_items")
+}
+
+model UserAddress {
+    id        String  @id @default(uuid())
+    user      User    @relation(fields: [user_id], references: [id])
+    user_id   String
+    address_1 String
+    address_2 String?
+    city      String
+    state     String
+    zip       Int
+    name      String
+
+    @@map("user_addresses")
+}
+
