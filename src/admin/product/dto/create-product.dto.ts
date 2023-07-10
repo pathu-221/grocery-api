@@ -16,7 +16,7 @@ export class CreateProductDto {
 
   @IsString()
   @IsOptional()
-  images: string;
+  images: string[];
 
   @IsString()
   category_id: string

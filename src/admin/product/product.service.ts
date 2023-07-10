@@ -21,12 +21,13 @@ export class ProductService {
    */
 
   async create(createProductDto: CreateProductDto) {
-    const categoryId = createProductDto.category_id;
-    const { category_id, ...productToAdd } = createProductDto;
+    const { category_id, images, ...productToAdd } = createProductDto;
+
 
     const product = await this.prisma.product.create({
       data: {
         ...productToAdd,
+        images: JSON.stringify(images),
         category: { connect: { id: category_id } }
       }
     });
@@ -81,9 +82,13 @@ export class ProductService {
    */
   async update(id: string, updateProductDto: UpdateProductDto | Prisma.ProductUpdateInput, requestOptions?: IRequestOptions) {
     const client = requestOptions?.transaction || this.prisma;
+    const { images, ...productToUpdate } = updateProductDto;
     const updatedProduct = await client.product.update({
       where: { id: id },
-      data: updateProductDto,
+      data: {
+        images: JSON.stringify(images),
+        ...productToUpdate,
+      },
     });
 
     return updatedProduct;

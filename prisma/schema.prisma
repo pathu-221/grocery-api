@@ -39,7 +39,7 @@ model Product {
     order_items OrderItem[]
     category    Category    @relation(fields: [category_id], references: [id])
     category_id String
-    images String?
+    images String @db.LongText()
     status Int     @default(1)
 
     created_at DateTime  @default(now())
