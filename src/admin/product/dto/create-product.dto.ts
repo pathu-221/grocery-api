@@ -18,6 +18,9 @@ export class CreateProductDto {
   @IsOptional()
   images: string;
 
+  @IsString()
+  category_id: string
+
   @IsNumber()
   @IsOptional()
   status: number;

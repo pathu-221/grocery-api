@@ -22,9 +22,9 @@ model User {
     orders     Order[]
     addresses  UserAddress[]
 
-    created_at   DateTime       @default(now())
-    updated_at   DateTime       @updatedAt
-    deleted_at   DateTime?
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
 
     @@map("users")
 }
@@ -37,8 +37,10 @@ model Product {
     quantity    Int
     cart        Cart[]
     order_items OrderItem[]
-    images      String?
-    status      Int         @default(1)
+    category    Category    @relation(fields: [category_id], references: [id])
+    category_id String
+    images String?
+    status Int     @default(1)
 
     created_at DateTime  @default(now())
     updated_at DateTime  @updatedAt
@@ -115,6 +117,23 @@ model UserAddress {
     zip       Int
     name      String
 
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
+
     @@map("user_addresses")
 }
 
+model Category {
+    id     String @id @default(uuid())
+    name   String
+    image  String
+    status Int    @default(1)
+
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
+    Product    Product[]
+
+    @@map("categories")
+}

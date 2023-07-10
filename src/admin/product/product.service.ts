@@ -20,10 +20,15 @@ export class ProductService {
    * @returns new product which is created
    */
 
-  async create(createProductDto: CreateProductDto, userId: string) {
+  async create(createProductDto: CreateProductDto) {
+    const categoryId = createProductDto.category_id;
+    const { category_id, ...productToAdd } = createProductDto;
 
     const product = await this.prisma.product.create({
-      data: createProductDto,
+      data: {
+        ...productToAdd,
+        category: { connect: { id: category_id } }
+      }
     });
 
     return product;

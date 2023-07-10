@@ -8,7 +8,7 @@ import {
   Post,
   Put,
   Query,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { IRequestUser, User } from 'src/shared/decorators/auth-user.decorator';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
@@ -23,11 +23,8 @@ export class ProductController {
   @UseGuards(AuthGuard)
   // @UseGuards(StoreOwnerGuard)
   @Post()
-  async create(
-    @Body() createProductDto: CreateProductDto,
-    @User() user: IRequestUser,
-  ) {
-    const data = await this.productService.create(createProductDto, user.id);
+  async create(@Body() createProductDto: CreateProductDto) {
+    const data = await this.productService.create(createProductDto);
     return {
       message: 'Product Added Successfully!',
       data: data,
@@ -39,14 +36,12 @@ export class ProductController {
     @Query('page') currentPage: string,
     @Query('perPage') perPage: string,
   ) {
-    const products = await this.productService.findAllBy({ });
+    const products = await this.productService.findAllBy({});
     return {
       message: 'Products fetched successfully!',
       data: products,
     };
   }
-
-
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
