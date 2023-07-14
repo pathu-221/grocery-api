@@ -6,10 +6,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { Prisma } from '@prisma/client';
-
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -21,23 +17,24 @@ export class ProductController {
     @Query('page') currentPage: string,
     @Query('perPage') perPage: string,
   ) {
-    const categories = category.replace(/\s/g, '').split(',');
+    const categories = category.length ? category.replace(/\s/g, '').split(',') : [];
+    console.log({ categories });
     let orderBy: any;
     if (sortBy === 'asc' || sortBy === 'desc') {
       orderBy = {
-        base_price: sortBy
+        base_price: sortBy,
       };
-    }
-    else if (sortBy === 'latest') orderBy = { created_at: 'desc' };
+    } else if (sortBy === 'latest') orderBy = { created_at: 'desc' };
 
-    console.log({ categories });
-    const products = await this.productService.findAllBy({
-      category: {
-        name: {
-          in: categories,
+    const products = await this.productService.findAllBy(
+      {
+        category: {
+          name: categories.length ? { in: categories } : {},
         },
       },
-    }, undefined, orderBy);
+      undefined,
+      orderBy,
+    );
     return {
       message: 'Products fetched successfully!',
       data: products,
