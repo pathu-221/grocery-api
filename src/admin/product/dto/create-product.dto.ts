@@ -1,7 +1,12 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsArray,
+  ArrayMinSize,
+} from 'class-validator';
 
 export class CreateProductDto {
-
   @IsString()
   name: string;
 
@@ -14,12 +19,13 @@ export class CreateProductDto {
   @IsNumber()
   quantity: number;
 
-  @IsString()
-  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
   images: string[];
 
   @IsString()
-  category_id: string
+  category_id: string;
 
   @IsNumber()
   @IsOptional()

@@ -40,7 +40,7 @@ export class CartController {
     @Query('perPage') perPage: string,
   ) {
     const cartItems = await this.cartService.findAll(user.id, {
-      product: { select: { id: true, name: true, base_price: true } },
+      product: { select: { id: true, name: true, base_price: true, images: true } },
     });
     return {
       message: 'User cart items fetched successfully!',

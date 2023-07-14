@@ -27,8 +27,9 @@ export class ProductService {
   async findAllBy(
     where: Prisma.ProductWhereInput,
     include?: Prisma.ProductInclude,
+    orderBy?: Prisma.ProductOrderByWithRelationInput
   ) {
-    const products = await this.prismaService.product.findMany({ where, include });
+    const products = await this.prismaService.product.findMany({ where, include, orderBy });
     return products;
   }
 
