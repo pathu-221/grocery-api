@@ -17,7 +17,9 @@ export class ProductController {
     @Query('page') currentPage: string,
     @Query('perPage') perPage: string,
   ) {
-    const categories = category.length ? category.replace(/\s/g, '').split(',') : [];
+    const categories = category.length
+      ? category.replace(/\s/g, '').split(',')
+      : [];
     console.log({ categories });
     let orderBy: any;
     if (sortBy === 'asc' || sortBy === 'desc') {
@@ -43,7 +45,16 @@ export class ProductController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const product = await this.productService.findOne(id);
+    const product = await this.productService.findOneBy(
+      { id },
+      {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    );
 
     if (!product) throw new NotFoundException('Product Not found');
 
