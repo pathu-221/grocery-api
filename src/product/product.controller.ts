@@ -20,7 +20,6 @@ export class ProductController {
     const categories = category.length
       ? category.replace(/\s/g, '').split(',')
       : [];
-    console.log({ categories });
     let orderBy: any;
     if (sortBy === 'asc' || sortBy === 'desc') {
       orderBy = {
