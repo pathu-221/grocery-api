@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { ApiResponseInterceptor } from './shared/interceptors/api-response.interceptor';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
@@ -13,6 +12,9 @@ import { OrdersModule } from './orders/orders.module';
 import { AddressModule } from './user-address/user-address.module';
 import { ProductModule } from './product/product.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { ApiResponseInterceptor } from './shared/interceptors/api-response.interceptor';
 
 @Module({
   imports: [

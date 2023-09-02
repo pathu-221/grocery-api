@@ -1,4 +1,18 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, NotFoundException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { join } from 'path';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -8,13 +22,34 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
-    const category = await this.categoriesService.create(createCategoryDto);
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: join(__dirname, '../../../../', 'public'),
+        filename: (req, file, cb) => {
+          const filename =
+            new Date().getTime().toString() +
+            '.' +
+            file.originalname.split('.')[1];
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
+  async create(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log(file);
+    const category = await this.categoriesService.create(
+      createCategoryDto,
+      file.filename,
+    );
 
     return {
       message: 'Category added successfully!',
-      data: category
-    }
+      data: category,
+    };
   }
 
   @Get()
@@ -23,8 +58,8 @@ export class CategoriesController {
 
     return {
       message: 'All categories fetched!',
-      data: categories
-    }
+      data: categories,
+    };
   }
 
   @Get(':id')
@@ -35,20 +70,24 @@ export class CategoriesController {
 
     return {
       message: 'Category fetched successfully!',
-      data: category
-    }
+      data: category,
+    };
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-
-    const category = await this.categoriesService.updateOneBy({ id: id }, updateCategoryDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ) {
+    const category = await this.categoriesService.updateOneBy(
+      { id: id },
+      updateCategoryDto,
+    );
 
     return {
-      message: "Category updated successfully!",
-      data: category
-    }
-
+      message: 'Category updated successfully!',
+      data: category,
+    };
   }
 
   @Delete(':id')
@@ -56,7 +95,7 @@ export class CategoriesController {
     await this.categoriesService.remove(id);
 
     return {
-      message: "Category deleted successfully!",
-    }
+      message: 'Category deleted successfully!',
+    };
   }
 }
