@@ -15,6 +15,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ApiResponseInterceptor } from './shared/interceptors/api-response.interceptor';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ApiResponseInterceptor } from './shared/interceptors/api-response.inter
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     PrismaModule,
+    FileModule,
     UserModule,
     AuthModule,
     AdminModule,

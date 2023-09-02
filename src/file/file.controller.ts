@@ -1,18 +1,22 @@
-import { Controller, Post, UseInterceptors } from '@nestjs/common';
-import { FileService } from './file.service';
+import {
+  Controller,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { join } from 'path';
+import { FileService } from './file.service';
 
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post()
+  @Post('upload')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: join(__dirname, '../../', '/public'),
+        destination: './public',
         filename: (req, file, cb) => {
           const filename =
             new Date().getTime().toString() +
@@ -23,5 +27,10 @@ export class FileController {
       }),
     }),
   )
-  uploadfie() {}
+  uploadfie(@UploadedFile() file: Express.Multer.File) {
+    return {
+      message: 'File Uploaded Successfully!',
+      data: file.filename,
+    };
+  }
 }
