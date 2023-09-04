@@ -26,7 +26,12 @@ export class CartController {
     @Body() createCartDto: CreateCartDto,
     @User() user: IRequestUser,
   ) {
-    const data = await this.cartService.create(createCartDto, user.id);
+    await this.cartService.create(createCartDto, user.id);
+    const data = await this.cartService.findAll(user.id, {
+      product: {
+        select: { id: true, name: true, base_price: true, images: true },
+      },
+    });
     return {
       message: 'Item added successfully',
       data,
@@ -40,7 +45,9 @@ export class CartController {
     @Query('perPage') perPage: string,
   ) {
     const cartItems = await this.cartService.findAll(user.id, {
-      product: { select: { id: true, name: true, base_price: true, images: true } },
+      product: {
+        select: { id: true, name: true, base_price: true, images: true },
+      },
     });
     return {
       message: 'User cart items fetched successfully!',
@@ -61,23 +68,37 @@ export class CartController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateCartDto: UpdateCartDto,
+    @User() user: IRequestUser,
+  ) {
     const updatedCart = await this.cartService.update({ id }, updateCartDto);
 
     if (!updatedCart) throw new NotFoundException('Cart Item not found!');
-
+    const data = await this.cartService.findAll(user.id, {
+      product: {
+        select: { id: true, name: true, base_price: true, images: true },
+      },
+    });
     return {
       message: 'Cart Updated Successfully!',
-      data: updatedCart,
+      data: data,
     };
   }
 
   @Delete(':id')
-  async deleteItem(@Param('id') id: string) {
-    const deletedItem = await this.cartService.delete(id);
+  async deleteItem(@Param('id') id: string, @User() user: IRequestUser) {
+    await this.cartService.delete(id);
+    const data = await this.cartService.findAll(user.id, {
+      product: {
+        select: { id: true, name: true, base_price: true, images: true },
+      },
+    });
+
     return {
       message: 'Cart Item Deleted',
-      data: deletedItem,
+      data: data,
     };
   }
 }
