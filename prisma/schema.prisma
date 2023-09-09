@@ -17,6 +17,7 @@ model User {
     last_name  String
     password   String
     user_name  String @unique
+    role       String @default("user")
 
     cart_items Cart[]
     orders     Order[]
@@ -39,8 +40,8 @@ model Product {
     order_items OrderItem[]
     category    Category    @relation(fields: [category_id], references: [id])
     category_id String
-    images String @db.LongText()
-    status Int     @default(1)
+    images      String      @db.LongText()
+    status      Int         @default(1)
 
     created_at DateTime  @default(now())
     updated_at DateTime  @updatedAt

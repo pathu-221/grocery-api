@@ -9,7 +9,7 @@ import { COMMON_STATUS } from 'src/shared/enums/status.enum';
 export class CategoriesService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createCategoryDto: CreateCategoryDto, filename: string) {
+  async create(createCategoryDto: CreateCategoryDto) {
     const category = await this.prismaService.category.findFirst({
       where: { name: createCategoryDto.name },
     });
@@ -17,7 +17,7 @@ export class CategoriesService {
     if (category) throw new ConflictException('Category already exists');
 
     const newCategory = await this.prismaService.category.create({
-      data: { name: createCategoryDto.name, image: filename },
+      data: createCategoryDto,
     });
 
     return newCategory;
@@ -49,13 +49,8 @@ export class CategoriesService {
   }
 
   async remove(id: string) {
-    const deletedCategory = await this.prismaService.category.update({
-      where: {
-        id: id,
-      },
-      data: {
-        status: COMMON_STATUS.INACTIVE,
-      },
+    const deletedCategory = await this.prismaService.category.delete({
+      where: { id },
     });
 
     return deletedCategory;

@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -16,35 +17,16 @@ import { join } from 'path';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
 
 @Controller('admin/categories')
+@UseGuards(AuthGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: join(__dirname, '../../../../', 'public'),
-        filename: (req, file, cb) => {
-          const filename =
-            new Date().getTime().toString() +
-            '.' +
-            file.originalname.split('.')[1];
-          cb(null, filename);
-        },
-      }),
-    }),
-  )
-  async create(
-    @Body() createCategoryDto: CreateCategoryDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    console.log(file);
-    const category = await this.categoriesService.create(
-      createCategoryDto,
-      file.filename,
-    );
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    const category = await this.categoriesService.create(createCategoryDto);
 
     return {
       message: 'Category added successfully!',
