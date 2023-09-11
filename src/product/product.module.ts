@@ -5,6 +5,7 @@ import { HelperService } from 'src/shared/services/helper/helper.service';
 
 @Module({
   controllers: [ProductController],
-  providers: [ProductService, HelperService]
+  providers: [ProductService, HelperService],
+  exports: [ProductService],
 })
 export class ProductModule {}

@@ -17,7 +17,7 @@ export class ProductController {
     @Query('page') currentPage: string,
     @Query('perPage') perPage: string,
   ) {
-    const categories = category.length
+    const categories = category?.length
       ? category.replace(/\s/g, '').split(',')
       : [];
     let orderBy: any;

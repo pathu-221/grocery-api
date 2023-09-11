@@ -26,6 +26,7 @@ model User {
     created_at DateTime  @default(now())
     updated_at DateTime  @updatedAt
     deleted_at DateTime?
+    Review     Review[]
 
     @@map("users")
 }
@@ -42,10 +43,12 @@ model Product {
     category_id String
     images      String      @db.LongText()
     status      Int         @default(1)
+    is_featured Boolean     @default(false)
 
     created_at DateTime  @default(now())
     updated_at DateTime  @updatedAt
     deleted_at DateTime?
+    Review     Review[]
 
     @@map("products")
 }
@@ -137,4 +140,19 @@ model Category {
     Product    Product[]
 
     @@map("categories")
+}
+
+model Review {
+    id         String    @id @default(uuid())
+    user_id    String
+    user       User      @relation(fields: [user_id], references: [id])
+    product_id String
+    product    Product   @relation(fields: [product_id], references: [id])
+    title      String
+    comment    String
+    created_at DateTime  @default(now())
+    updated_at DateTime  @updatedAt
+    deleted_at DateTime?
+
+    @@map("reviews")
 }

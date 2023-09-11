@@ -17,10 +17,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
 
 @Controller('admin/product')
+@UseGuards(AuthGuard)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @UseGuards(AuthGuard)
   // @UseGuards(StoreOwnerGuard)
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
@@ -36,7 +36,10 @@ export class ProductController {
     @Query('page') currentPage: string,
     @Query('perPage') perPage: string,
   ) {
-    const products = await this.productService.findAllBy({});
+    const products = await this.productService.findAllBy(
+      {},
+      { category: { select: { name: true, id: true } } },
+    );
     return {
       message: 'Products fetched successfully!',
       data: products,

@@ -16,6 +16,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ApiResponseInterceptor } from './shared/interceptors/api-response.interceptor';
 import { FileModule } from './file/file.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FileModule } from './file/file.module';
     AddressModule,
     ProductModule,
     CategoriesModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [

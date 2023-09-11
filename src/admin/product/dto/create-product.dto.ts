@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsArray,
   ArrayMinSize,
+  IsBoolean,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -30,4 +31,8 @@ export class CreateProductDto {
   @IsNumber()
   @IsOptional()
   status: number;
+
+  @IsOptional()
+  @IsBoolean()
+  is_featured: boolean;
 }
