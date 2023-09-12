@@ -148,6 +148,7 @@ model Review {
     user       User      @relation(fields: [user_id], references: [id])
     product_id String
     product    Product   @relation(fields: [product_id], references: [id])
+    rating     Int
     title      String
     comment    String
     created_at DateTime  @default(now())
