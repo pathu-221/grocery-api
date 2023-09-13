@@ -1,28 +1,32 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { ProductService } from 'src/product/product.service';
+import { IRequestUser } from 'src/shared/decorators/auth-user.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { IRequestUser } from 'src/shared/decorators/auth-user.decorator';
-import { ProductService } from 'src/product/product.service';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ReviewService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly productService: ProductService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createReviewDto: CreateReviewDto, user: IRequestUser) {
-    const product = await this.productService.findOneBy({
-      id: createReviewDto.product_id,
-    });
-    if (!product) throw new BadRequestException('Product not found!');
-
     const review = await this.prismaService.review.create({
       data: {
-        ...createReviewDto,
-        user_id: user.id,
+        title: createReviewDto.title,
+        rating: createReviewDto.rating,
+        comment: createReviewDto.comment,
+        user: {
+          connect: { id: user.id },
+        },
+        product: {
+          connect: { id: createReviewDto.product_id },
+        },
       },
     });
     return review;
@@ -39,6 +43,17 @@ export class ReviewService {
     return reviews;
   }
 
+  async getProductRating(productId: string) {
+    const rating = await this.prismaService.review.aggregate({
+      _avg: {
+        rating: true,
+      },
+      where: {
+        product_id: productId,
+      },
+    });
+    return rating._avg.rating || 0;
+  }
   async findOneBy(
     where: Prisma.ReviewWhereUniqueInput,
     include?: Prisma.ReviewInclude,

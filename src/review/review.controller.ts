@@ -10,6 +10,7 @@ import {
   Query,
   NotFoundException,
   Put,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -27,6 +28,12 @@ export class ReviewController {
     @Body() createReviewDto: CreateReviewDto,
     @User() user: IRequestUser,
   ) {
+    const review = await this.reviewService.findAllBy({
+      AND: { product_id: createReviewDto.product_id, user_id: user.id },
+    });
+
+    if (review.length)
+      throw new ForbiddenException('Already rated this product!');
     const data = await this.reviewService.create(createReviewDto, user);
     return {
       message: 'Review added successfully!',
@@ -36,7 +43,6 @@ export class ReviewController {
 
   @Get()
   async findAll(@Query('product_id') product_id: string) {
-    console.log({ product_id });
     const data = await this.reviewService.findAllBy(
       product_id ? { product_id } : {},
       {
