@@ -77,7 +77,14 @@ export class DashboardService {
       }
       monthlySum[key] += 1;
     });
-    return monthlySum;
+    const sortedMonthlySum = {};
+    months.forEach((month) => {
+      if (monthlySum[month]) {
+        sortedMonthlySum[month] = monthlySum[month];
+      }
+    });
+
+    return sortedMonthlySum;
   }
 
   findOne(id: number) {
