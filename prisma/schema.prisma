@@ -74,6 +74,7 @@ model Order {
     total_items    Int
     buyer          User        @relation(fields: [buyer_id], references: [id])
     buyer_id       String
+    status         String      @default("received")
     order_items    OrderItem[]
     payment_type   String
     payment_id     String?
