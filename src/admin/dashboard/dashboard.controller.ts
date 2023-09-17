@@ -12,9 +12,10 @@ import { DashboardService } from './dashboard.service';
 import { CreateDashboardDto } from './dto/create-dashboard.dto';
 import { UpdateDashboardDto } from './dto/update-dashboard.dto';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { RoleGuard } from 'src/shared/guards/role.guard';
 
 @Controller('admin/dashboard')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 

@@ -28,8 +28,14 @@ export class OrdersService {
     return order;
   }
 
-  async updateOneBy(where: Prisma.OrderWhereUniqueInput, updateOrderDto: UpdateOrderDto) {
-    
+  async updateOneBy(
+    where: Prisma.OrderWhereUniqueInput,
+    updateOrderDto: UpdateOrderDto | Prisma.OrderUpdateInput,
+  ) {
+    const order = await this.prismaService.order.update({
+      where,
+      data: updateOrderDto,
+    });
   }
 
   remove(id: number) {

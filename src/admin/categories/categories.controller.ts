@@ -7,20 +7,16 @@ import {
   Param,
   Post,
   Put,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { join } from 'path';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { RoleGuard } from 'src/shared/guards/role.guard';
 
 @Controller('admin/categories')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

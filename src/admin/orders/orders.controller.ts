@@ -1,23 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
   NotFoundException,
+  Param,
+  Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
-import { OrdersService } from './orders.service';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { RoleGuard } from 'src/shared/guards/role.guard';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
-import { Prisma } from '@prisma/client';
+import { OrdersService } from './orders.service';
 
-@Controller('orders')
-@UseGuards(AuthGuard)
+@Controller('admin/orders')
+@UseGuards(AuthGuard, RoleGuard)
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
@@ -39,7 +38,25 @@ export class OrdersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const order = await this.ordersService.findOneBy({ id });
+    const order = await this.ordersService.findOneBy(
+      { id },
+      {
+        buyer: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            user_name: true,
+          },
+        },
+        order_items: {
+          include: {
+            product: { select: { id: true, name: true, images: true } },
+          },
+        },
+      },
+    );
     if (!order) throw new NotFoundException('Order not found!');
     return {
       message: 'Order fetched successfully!',

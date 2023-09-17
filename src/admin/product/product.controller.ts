@@ -15,9 +15,10 @@ import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
+import { RoleGuard } from 'src/shared/guards/role.guard';
 
 @Controller('admin/product')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -58,7 +59,6 @@ export class ProductController {
     };
   }
 
-  @UseGuards(AuthGuard)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -72,7 +72,6 @@ export class ProductController {
     };
   }
 
-  @UseGuards(AuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const product = await this.productService.removeOneBy({ id: id });
