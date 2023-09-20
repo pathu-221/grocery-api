@@ -42,6 +42,17 @@ export class ProductController {
     };
   }
 
+  @Get('/featured')
+  async findFeatured() {
+    const data = await this.productService.findAllBy({ is_featured: true });
+    if (!data) throw new NotFoundException('No featured products found');
+
+    return {
+      message: 'Featured products fetched!',
+      data: data,
+    };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const product = await this.productService.findOneBy(
