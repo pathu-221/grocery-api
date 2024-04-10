@@ -2,7 +2,7 @@
 /dist
 dist.zip
 /node_modules
-# /public
+/public
 
 # env files
 .env.production
