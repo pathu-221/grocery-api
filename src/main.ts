@@ -11,7 +11,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173',
       'http://localhost:5174',
-      'grocery.prathamaggarwal.me',
+      'https://grocery.prathamaggarwal.me',
     ],
   });
   app.useStaticAssets(join(__dirname, '../../', 'public'));
