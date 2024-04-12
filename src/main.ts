@@ -8,7 +8,11 @@ async function bootstrap() {
   console.log({ path: join(__dirname, 'public') });
 
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'grocery.prathamaggarwal.me',
+    ],
   });
   app.useStaticAssets(join(__dirname, '../../', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
